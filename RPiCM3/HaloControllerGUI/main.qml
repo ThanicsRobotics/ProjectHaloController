@@ -9,11 +9,9 @@ ApplicationWindow {
     height: 320
     title: qsTr("Hello World")
 
-    menuBar: MenuBar {
-        Menu {
-            title: "File"
-        }
+    StackView {
+        id: stack
+        initialItem: "HomePage.qml"
     }
-
 
 }

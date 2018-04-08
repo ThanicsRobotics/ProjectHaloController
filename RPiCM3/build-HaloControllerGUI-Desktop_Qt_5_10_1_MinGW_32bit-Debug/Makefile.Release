@@ -94,7 +94,8 @@ compiler_rcc_clean:
 	-$(DEL_FILE) release\qrc_qml.cpp
 release/qrc_qml.cpp: ../HaloControllerGUI/qml.qrc \
 		C:/Qt/5.10.1/mingw53_32/bin/rcc.exe \
-		../HaloControllerGUI/main.qml
+		../HaloControllerGUI/main.qml \
+		../HaloControllerGUI/images/logo.jpg
 	C:\Qt\5.10.1\mingw53_32\bin\rcc.exe -name qml ..\HaloControllerGUI\qml.qrc -o release\qrc_qml.cpp
 
 compiler_moc_predefs_make_all: release/moc_predefs.h
