@@ -1,0 +1,16 @@
+import QtQuick 2.4
+
+Item {
+    width: 400
+    height: 400
+
+    Rectangle {
+        id: rectangle
+        color: "#ffffff"
+        anchors.rightMargin: 0
+        anchors.bottomMargin: 0
+        anchors.leftMargin: 0
+        anchors.topMargin: 0
+        anchors.fill: parent
+    }
+}
