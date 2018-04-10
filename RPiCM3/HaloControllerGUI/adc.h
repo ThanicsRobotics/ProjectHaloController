@@ -3,13 +3,12 @@
 #define RPI_COMPILE 0
 
 #if RPI_COMPILE
-void parseToPoints(char data[12]);
+int *parseToPoints(char data[12]);
 float pointsToVolts(int points);
 int pointsToPWM(int points);
 
-
 void setupADC();
-void getADCData();
+int *getADCData();
 #endif
 
 #endif // ADC_H

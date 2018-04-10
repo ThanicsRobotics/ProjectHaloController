@@ -1,5 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.3
+import QtGraphicalEffects 1.0
 
 Item {
     width: 480
@@ -12,7 +13,7 @@ Item {
         Button {
             id: landButton
             x: 23
-            y: 64
+            y: 52
             width: 154
             height: 66
             text: qsTr("Land")
@@ -40,22 +41,16 @@ Item {
             onClicked: backend.operateLandingGear(1)
         }
 
-        ProgressBar {
-            id: progressBar1
+        StreamBar {
             x: 305
             y: 141
-            width: 100
-            value: 0.5
             rotation: 90
         }
 
-        ProgressBar {
-            id: progressBar2
+        StreamBar {
             x: 352
             y: 141
-            width: 100
             rotation: 270
-            value: 0.5
         }
     }
 }

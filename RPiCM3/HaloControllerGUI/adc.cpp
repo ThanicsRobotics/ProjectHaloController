@@ -9,11 +9,12 @@ int rawValues[6];
 char *adcValues[12];
 int adcFd;
 
-void parseToPoints(char data[12]) {
+int *parseToPoints(char *data[12]) {
     for(int i = 0; i < sizeof(data); i+= 2) {
         data[i] -= 252;
         if (i > 0) rawValues[i/2] = data[i-1] << 8 | data[i];
     }
+    return rawValues;
 }
 
 float pointsToVolts(int points) {
@@ -28,8 +29,9 @@ void setupADC() {
     adcFd = i2cOpen(1,ADC_ADDR,0);
 }
 
-void getADCData() {
+int *getADCData() {
     i2cReadI2CBlockData(adcFd,0x0B,adcValues,12);
+    return parseToPoints(adcValues);
 }
 #endif
 

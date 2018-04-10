@@ -11,6 +11,11 @@
 void *backendLoop(void *void_ptr){
     setupADC();
 
+    //Main loop
+    while(1) {
+
+    }
+
     return NULL;
 }
 #endif
