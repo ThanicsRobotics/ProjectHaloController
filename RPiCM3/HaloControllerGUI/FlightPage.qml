@@ -37,6 +37,7 @@ Item {
             height: 83
             text: qsTr("Gear")
             font.pixelSize: 20
+            onClicked: backend.operateLandingGear(1)
         }
 
         ProgressBar {

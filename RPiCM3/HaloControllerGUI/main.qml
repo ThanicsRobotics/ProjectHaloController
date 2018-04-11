@@ -9,6 +9,8 @@ ApplicationWindow {
     height: 320
     title: qsTr("Hello World")
 
+
+
     StackView {
         id: stack
         initialItem: "HomePage.qml"
