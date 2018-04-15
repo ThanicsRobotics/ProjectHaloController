@@ -38,7 +38,10 @@ Item {
             Layout.preferredHeight: 53
             Layout.preferredWidth: 151
             font.pixelSize: 30
-            onClicked: stack.push("FlightPage.qml")
+            onClicked: {
+                backend.takeoff()
+                stack.push("FlightPage.qml")
+            }
         }
 
         Slider {

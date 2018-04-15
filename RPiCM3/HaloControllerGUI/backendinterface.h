@@ -9,6 +9,8 @@ class BackendInterface : public QObject
 public:
     explicit BackendInterface(QObject *parent = nullptr);
     Q_INVOKABLE void operateLandingGear(int direction);
+    Q_INVOKABLE void takeoff();
+    Q_INVOKABLE void land();
 signals:
 
 public slots:

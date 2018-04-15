@@ -18,7 +18,10 @@ Item {
             height: 66
             text: qsTr("Land")
             font.pixelSize: 20
-            onClicked: stack.pop()
+            onClicked: {
+                backend.land()
+                stack.pop()
+            }
         }
 
         ProgressBar {
