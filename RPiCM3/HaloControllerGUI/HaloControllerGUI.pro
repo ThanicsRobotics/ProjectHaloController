@@ -16,7 +16,8 @@ SOURCES += \
         main.cpp \
     adc.cpp \
     radio.cpp \
-    backendinterface.cpp
+    backendinterface.cpp \
+    stream.cpp
 
 RESOURCES += qml.qrc
 
@@ -375,4 +376,5 @@ HEADERS += \
     mavlink/mavlink_types.h \
     mavlink/message.hpp \
     mavlink/msgmap.hpp \
-    mavlink/protocol.h
+    mavlink/protocol.h \
+    stream.h

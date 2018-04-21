@@ -1,6 +1,6 @@
 #ifndef ADC_H
 #define ADC_H
-#define RPI_COMPILE 0
+#define RPI_COMPILE 1
 
 #if RPI_COMPILE
 int *parseToPoints(char data[12]);
