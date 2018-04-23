@@ -1,5 +1,6 @@
 #include <radio.h>
 #include <adc.h>
+#include <mavlink/common/mavlink.h>
 
 #if RPI_COMPILE
 #include <pigpio.h>
@@ -12,57 +13,55 @@
 #include <iostream>
 
 #define PORT "9999"
+#define SYSID 100
+#define COMPID 1
 
-int radioFd;
+volatile int droneStatus;
 
-void setupRadio() {
-    radioFd = serOpen("/dev/ttyAMA0", 9600, 0);
+uint8_t *sendHeartbeat(uint8_t mode, uint8_t status) {
+    mavlink_message_t msg;
+    uint16_t len;
+    uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+
+    mavlink_msg_heartbeat_pack(SYSID, COMPID, &msg, MAV_TYPE_QUADROTOR, MAV_AUTOPILOT_GENERIC, mode, 0, status);
+    len = mavlink_msg_to_send_buffer(buf, &msg);
+    return buf;
 }
 
-//void telemetryStream() {
-//    char server_message[256] = "You have reached server!";
-
-//    int server_socket;
-//    server_socket = socket(AF_INET, SOCK_STREAM, 0);
-//    struct sockaddr_in server_address;
-//    server_address.sin_family = AF_INET;
-//    server_address.sin_port = htons(9002);
-//    server_address.sin_addr.s_addr = INADDR_ANY;
-
-//    bind(server_socket, (struct sockaddr*) &server_address, sizeof(server_address));
-//    listen(server_socket, 5);
-//    int client_socket;
-//    client_socket = accept(server_socket, NULL, NULL);
-//    send(client_socket, server_message, sizeof(server_message), 0);
-//    close(server_socket);
-//}
-
-void mavlinkSend() {
-    int data[6] = getADCData();
-    int pwm[4];
-    for (int i = 0; i < 3; i++) {
-        pwm[i] = pointsToPWM(data[i]);
+void mavlinkReceivePacket(char *packet) {
+    uint8_t byte = 0;
+    int i = 0;
+    while (byte != '\0') {
+        byte = packet[i];
+        mavlinkReceiveByte((uint8_t)packet[i]);
+        i += 1;
     }
-    int yaw = pwm[0];
-    int altitude = pwm[1];
-    int roll = pwm[2];
-    int pitch = pwm[3];
-
-
 }
 
-void mavlinkReceive() {
+void mavlinkReceiveByte(uint8_t data) {
     mavlink_message_t msg;
     mavlink_status_t status;
-    while (serDataAvailable(radioFd)) {
-        uint8_t data = serReadByte(radioFd);
-        if(mavlink_parse_char(MAVLINK_COMM_0, data, &msg, &status)) {
-            switch(msg.msgid) {
-                case MAVLINK_MSG_ID_HEARTBEAT:
-                    mavlink_heartbeat_t hb;
-                    mavlink_msg_heartbeat_decode(&msg, &hb);
-                    break;
-            }
+    if(mavlink_parse_char(MAVLINK_COMM_0, data, &msg, &status)) {
+        switch(msg.msgid) {
+            case MAVLINK_MSG_ID_HEARTBEAT:
+                mavlink_heartbeat_t hb;
+                mavlink_msg_heartbeat_decode(&msg, &hb);
+                droneStatus = hb.system_status;
+                break;
+
+            case MAVLINK_MSG_ID_COMMAND_LONG:
+                mavlink_command_long_t command;
+                switch (command.command) {
+                    case MAV_CMD_NAV_LAND:
+                        break;
+                    case MAV_CMD_NAV_TAKEOFF:
+                        break;
+                }
+                break;
+            default:
+                break;
         }
     }
+}
+
 #endif

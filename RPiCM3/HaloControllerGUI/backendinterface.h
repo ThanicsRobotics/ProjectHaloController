@@ -2,6 +2,7 @@
 #define BACKENDINTERFACE_H
 
 #include <QObject>
+#include <stream.h>
 
 class BackendInterface : public QObject
 {
@@ -14,6 +15,7 @@ public:
 signals:
 
 public slots:
+    void cleanup(Stream stream);
 };
 
 #endif // BACKENDINTERFACE_H

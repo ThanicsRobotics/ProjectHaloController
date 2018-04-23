@@ -9,6 +9,8 @@ int pointsToPWM(int points);
 
 void setupADC();
 int *getADCData();
+void closeADC();
+
 #endif
 
 #endif // ADC_H

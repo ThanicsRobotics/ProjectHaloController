@@ -32,6 +32,12 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+INCLUDEPATH += /usr/local/lib
+LIBS += -L"/usr/local/lib" -lpigpio
+
+target.path = /home/pi
+INSTALLS += target
+
 HEADERS += \
     adc.h \
     radio.h \

@@ -6,10 +6,10 @@
 #define ADC_ADDR 0x33
 
 int rawValues[6];
-char *adcValues[12];
+char adcValues[12];
 int adcFd;
 
-int *parseToPoints(char *data[12]) {
+int *parseToPoints(char data[12]) {
     for(int i = 0; i < sizeof(data); i+= 2) {
         data[i] -= 252;
         if (i > 0) rawValues[i/2] = data[i-1] << 8 | data[i];
@@ -27,6 +27,10 @@ int pointsToPWM(int points) {
 
 void setupADC() {
     adcFd = i2cOpen(1,ADC_ADDR,0);
+}
+
+void closeADC() {
+    i2cClose(adcFd);
 }
 
 int *getADCData() {
