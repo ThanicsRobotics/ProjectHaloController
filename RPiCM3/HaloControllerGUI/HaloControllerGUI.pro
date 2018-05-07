@@ -17,7 +17,8 @@ SOURCES += \
     adc.cpp \
     radio.cpp \
     backendinterface.cpp \
-    stream.cpp
+    stream.cpp \
+    serial.cpp
 
 RESOURCES += qml.qrc
 
@@ -34,9 +35,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 INCLUDEPATH += /usr/local/lib
 LIBS += -L"/usr/local/lib" -lpigpio
-
-target.path = /home/pi
-INSTALLS += target
 
 HEADERS += \
     adc.h \
@@ -383,4 +381,8 @@ HEADERS += \
     mavlink/message.hpp \
     mavlink/msgmap.hpp \
     mavlink/protocol.h \
-    stream.h
+    stream.h \
+    serial.h
+
+target.path = /home/pi
+INSTALLS += target

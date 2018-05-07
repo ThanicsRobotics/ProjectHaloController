@@ -13,19 +13,24 @@
 #include <iostream>
 
 #define PORT "9999"
-#define SYSID 100
+#define SYSID 255
 #define COMPID 1
 
-volatile int droneStatus;
+int droneStatus;
 
-uint8_t *sendHeartbeat(uint8_t mode, uint8_t status) {
+buffer sendHeartbeat(uint8_t mode, uint8_t status) {
     mavlink_message_t msg;
     uint16_t len;
     uint8_t buf[MAVLINK_MAX_PACKET_LEN];
 
-    mavlink_msg_heartbeat_pack(SYSID, COMPID, &msg, MAV_TYPE_QUADROTOR, MAV_AUTOPILOT_GENERIC, mode, 0, status);
+    mavlink_msg_heartbeat_pack(SYSID, COMPID, &msg, MAV_TYPE_GCS, MAV_AUTOPILOT_GENERIC, mode, 0, status);
     len = mavlink_msg_to_send_buffer(buf, &msg);
-    return buf;
+    printf("%d bytes\n", len);
+
+    buffer sendBuffer;
+    sendBuffer.buf = buf;
+    sendBuffer.len = len;
+    return sendBuffer;
 }
 
 void mavlinkReceivePacket(char *packet) {
@@ -42,25 +47,28 @@ void mavlinkReceiveByte(uint8_t data) {
     mavlink_message_t msg;
     mavlink_status_t status;
     if(mavlink_parse_char(MAVLINK_COMM_0, data, &msg, &status)) {
-        switch(msg.msgid) {
-            case MAVLINK_MSG_ID_HEARTBEAT:
-                mavlink_heartbeat_t hb;
-                mavlink_msg_heartbeat_decode(&msg, &hb);
-                droneStatus = hb.system_status;
-                break;
+        printf("Received message with ID %d, sequence: %d from component %d of system %d\n",
+        msg.msgid, msg.seq, msg.compid, msg.sysid);
+//        switch(msg.msgid) {
+//            case MAVLINK_MSG_ID_HEARTBEAT:
+//                mavlink_heartbeat_t hb;
+//                mavlink_msg_heartbeat_decode(&msg, &hb);
+//                droneStatus = hb.system_status;
 
-            case MAVLINK_MSG_ID_COMMAND_LONG:
-                mavlink_command_long_t command;
-                switch (command.command) {
-                    case MAV_CMD_NAV_LAND:
-                        break;
-                    case MAV_CMD_NAV_TAKEOFF:
-                        break;
-                }
-                break;
-            default:
-                break;
-        }
+//                break;
+
+//            case MAVLINK_MSG_ID_COMMAND_LONG:
+//                mavlink_command_long_t command;
+//                switch (command.command) {
+//                    case MAV_CMD_NAV_LAND:
+//                        break;
+//                    case MAV_CMD_NAV_TAKEOFF:
+//                        break;
+//                }
+//                break;
+//            default:
+//                break;
+//        }
     }
 }
 

@@ -11,26 +11,43 @@
 #include <string.h>
 #include <iostream>
 #include <stdio.h>
+#include <serial.h>
 
 #if RPI_COMPILE
 #include <pigpio.h>
 
 #define CONTROLLER_IP "192.168.168.232"
 
-Stream stream(CONTROLLER_IP, "9999");
+//Stream stream(CONTROLLER_IP, "9999");
 
-void *backendLoop(void *void_ptr){
+void *backendLoop(void*){
     setupADC();
-    stream.sendData(sendHeartbeat(MAV_MODE_PREFLIGHT, MAV_STATE_STANDBY));
-    for(int i = 0; i < 10; i++) {
-        uint8_t *data;
-        sprintf((char*)data, "%d", i);
-        stream.sendData(data);
+    Serial radio;
+    radio.setupSerial("/dev/serial0", 9600);
+    printf("Sending Heartbeat\n");
+    buffer sendBuffer = sendHeartbeat(MAV_MODE_PREFLIGHT, MAV_STATE_STANDBY);
+    radio.write(sendBuffer.buf, sendBuffer.len);
+    printf("Reading Heartbeat\n");
+    while (1) {
+        mavlinkReceiveByte(radio.readChar());
     }
-    mavlinkReceivePacket(stream.receiveDataPacket());
-    while(1) {
+    //stream.receiveDataPacket();
 
-    }
+    //stream.sendData(sendBuffer.buf, sendBuffer.len);
+    //printf("sending\n");
+    //std::string message = "Hello again";
+    //stream.sendData((uint8_t*)message.c_str(), sizeof(message));
+    //printf("done\n");
+//    for(int i = 0; i < 10; i++) {
+//        uint8_t *data;
+//        sprintf((char*)data, "%d", i);
+//        stream.sendData(data);
+//    }
+    //stream.receiveDataPacket();
+    //mavlinkReceivePacket(stream.receiveDataPacket());
+//    while(1) {
+
+//    }
 
     return NULL;
 }
@@ -59,7 +76,7 @@ int main(int argc, char *argv[])
         return -1;
 
     engine.rootContext()->setContextProperty("backend", backend.data());
-    QObject::connect(&app, SIGNAL(aboutToQuit()), &closing, SLOT(closing.cleanup(stream)));
+    //QObject::connect(&app, SIGNAL(aboutToQuit()), &closing, SLOT(closing.cleanup(stream)));
 
     return app.exec();
 }

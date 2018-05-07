@@ -101,12 +101,12 @@ Stream::Stream(char *ip_address, char *port)
 
     printf("Waiting for client...\n");
 
-    while(1) {  // main accept() loop
+    //while(1) {  // main accept() loop
             sin_size = sizeof their_addr;
             new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
             if (new_fd == -1) {
                 perror("accept");
-                continue;
+                //continue;
             }
 
             inet_ntop(their_addr.ss_family,
@@ -114,25 +114,27 @@ Stream::Stream(char *ip_address, char *port)
                 clientIP, sizeof clientIP);
             printf("server: got connection from %s\n", clientIP);
 
-            if (!fork()) { // this is the child process
-                close(sockfd); // child doesn't need the listener
-                if (send(new_fd, "Hello, world!", 13, 0) == -1)
-                    perror("send");
-                close(new_fd);
-                exit(0);
-            }
-            //close(new_fd);  // parent doesn't need this
-        }
+            if (send(new_fd, "Hello, world!", 13, 0) == -1) perror("send");
+//            if (!fork()) { // this is the child process
+//                close(sockfd); // child doesn't need the listener
+//                if (send(new_fd, "Hello, world!", 13, 0) == -1)
+//                    perror("send");
+//                close(new_fd);
+//                exit(0);
+//            }
+//            close(new_fd);  // parent doesn't need this
+       // }
 }
 
-int Stream::sendData(uint8_t *data)
+int Stream::sendData(uint8_t *data, uint16_t len)
 {
     //const char* newdata = data.c_str();
     int numbytes;
-    if ((numbytes = send(new_fd, data, MAXDATASIZE-1, 0)) == -1) {
+    if ((numbytes = send(new_fd, data, len, 0)) == -1) {
         perror("send");
         exit(1);
     }
+    printf("Sent %d bytes.\n", numbytes);
 }
 
 char *Stream::receiveDataPacket()
@@ -147,7 +149,7 @@ char *Stream::receiveDataPacket()
 
     buf[numbytes] = '\0';
 
-    printf("server: received '%s'\n",buf);
+    printf("server: received %d bytes: '%s'\n", numbytes, buf);
     char *bufPointer = buf;
     return bufPointer;
 }

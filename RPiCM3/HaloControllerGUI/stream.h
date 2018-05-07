@@ -7,7 +7,7 @@ class Stream
 {
 public:
     Stream(char *ip_address, char *port);
-    int sendData(uint8_t *data);
+    int sendData(uint8_t *data, uint16_t len);
     char *receiveDataPacket();
     void closeStream();
 };
