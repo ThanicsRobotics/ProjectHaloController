@@ -2,13 +2,16 @@
 #define ADC_H
 #define RPI_COMPILE 1
 
+#include <radio.h>
+
 #if RPI_COMPILE
-int *parseToPoints(char data[12]);
-float pointsToVolts(int points);
-int pointsToPWM(int points);
+const uint16_t* parseToPoints(uint8_t data[14]);
+float pointsToVolts(uint16_t points);
+uint16_t pointsToPWM(uint16_t points);
 
 void setupADC();
-int *getADCData();
+const uint16_t *getADCData();
+const channels& getJoystickChannels();
 void closeADC();
 
 #endif
