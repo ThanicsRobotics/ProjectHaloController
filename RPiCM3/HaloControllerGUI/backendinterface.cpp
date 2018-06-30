@@ -22,8 +22,3 @@ void BackendInterface::land()
 
 }
 
-void BackendInterface::cleanup(Stream stream)
-{
-    stream.closeStream();
-    closeADC();
-}

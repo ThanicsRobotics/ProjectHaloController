@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_BackendInterface_t {
-    QByteArrayData data[9];
-    char stringdata0[82];
+    QByteArrayData data[6];
+    char stringdata0[60];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -32,19 +32,15 @@ struct qt_meta_stringdata_BackendInterface_t {
 static const qt_meta_stringdata_BackendInterface_t qt_meta_stringdata_BackendInterface = {
     {
 QT_MOC_LITERAL(0, 0, 16), // "BackendInterface"
-QT_MOC_LITERAL(1, 17, 7), // "cleanup"
-QT_MOC_LITERAL(2, 25, 0), // ""
-QT_MOC_LITERAL(3, 26, 6), // "Stream"
-QT_MOC_LITERAL(4, 33, 6), // "stream"
-QT_MOC_LITERAL(5, 40, 18), // "operateLandingGear"
-QT_MOC_LITERAL(6, 59, 9), // "direction"
-QT_MOC_LITERAL(7, 69, 7), // "takeoff"
-QT_MOC_LITERAL(8, 77, 4) // "land"
+QT_MOC_LITERAL(1, 17, 18), // "operateLandingGear"
+QT_MOC_LITERAL(2, 36, 0), // ""
+QT_MOC_LITERAL(3, 37, 9), // "direction"
+QT_MOC_LITERAL(4, 47, 7), // "takeoff"
+QT_MOC_LITERAL(5, 55, 4) // "land"
 
     },
-    "BackendInterface\0cleanup\0\0Stream\0"
-    "stream\0operateLandingGear\0direction\0"
-    "takeoff\0land"
+    "BackendInterface\0operateLandingGear\0"
+    "\0direction\0takeoff\0land"
 };
 #undef QT_MOC_LITERAL
 
@@ -54,26 +50,20 @@ static const uint qt_meta_data_BackendInterface[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       4,   14, // methods
+       3,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
        0,       // signalCount
 
- // slots: name, argc, parameters, tag, flags
-       1,    1,   34,    2, 0x0a /* Public */,
-
  // methods: name, argc, parameters, tag, flags
-       5,    1,   37,    2, 0x02 /* Public */,
-       7,    0,   40,    2, 0x02 /* Public */,
-       8,    0,   41,    2, 0x02 /* Public */,
-
- // slots: parameters
-    QMetaType::Void, 0x80000000 | 3,    4,
+       1,    1,   29,    2, 0x02 /* Public */,
+       4,    0,   32,    2, 0x02 /* Public */,
+       5,    0,   33,    2, 0x02 /* Public */,
 
  // methods: parameters
-    QMetaType::Void, QMetaType::Int,    6,
+    QMetaType::Void, QMetaType::Int,    3,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -86,10 +76,9 @@ void BackendInterface::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
         BackendInterface *_t = static_cast<BackendInterface *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->cleanup((*reinterpret_cast< Stream(*)>(_a[1]))); break;
-        case 1: _t->operateLandingGear((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 2: _t->takeoff(); break;
-        case 3: _t->land(); break;
+        case 0: _t->operateLandingGear((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 1: _t->takeoff(); break;
+        case 2: _t->land(); break;
         default: ;
         }
     }
@@ -120,13 +109,13 @@ int BackendInterface::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 3)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 3;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 4)
+        if (_id < 3)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 4;
+        _id -= 3;
     }
     return _id;
 }

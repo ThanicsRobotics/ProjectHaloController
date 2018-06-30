@@ -15,7 +15,6 @@ public:
 signals:
 
 public slots:
-    void cleanup(Stream stream);
 };
 
 #endif // BACKENDINTERFACE_H

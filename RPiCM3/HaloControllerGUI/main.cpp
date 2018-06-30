@@ -13,6 +13,10 @@
 #include <iostream>
 #include <stdio.h>
 #include <serial.h>
+#include <array>
+#include <signal.h>
+#include <unistd.h>
+#include <stdlib.h>
 
 #if RPI_COMPILE
 #include <pigpio.h>
@@ -20,28 +24,70 @@
 
 #define CONTROLLER_IP "192.168.168.232"
 
+ADC adc;
+Radio<Serial> radio;
 //Stream stream(CONTROLLER_IP, "9999");
 
-void backendLoop(){
-    setupADC();
-    Radio<Serial> radio;
-    radio.setupSerial("/dev/serial0", 9600);
-    int timer = millis();
+void shutdown(int signum) {
+    adc.closeADC();
+    radio.closeSerial();
+}
+
+void backendLoop() {
+    signal(SIGINT, shutdown);
+
+    if (!fork())
+    {
+        system("gst-launch-1.0 -v udpsrc port=5000 ! application/x-rtp\,\ media\=\(string\)video\,\ "
+               "clock-rate\=\(int\)90000\,\ encoding-name\=\(string\)H264\,\ packetization-mode\=\(string\)1\,\ "
+               "profile-level-id\=\(string\)640028\,\ sprop-parameter-sets\=\(string\)"
+               "\"J2QAKKwrQDwBE/LAPEiagA\\\=\\\=\\\,KO4CXLA\\\=\"\,\ payload\=\(int\)96\,\ ssrc\=\(uint\)1748482228\,\ "
+               "timestamp-offset\=\(uint\)1596184480\,\ seqnum-offset\=\(uint\)2320 ! fdsink | "
+               "gst-launch-1.0 -v fdsrc ! application/x-rtp\,\ media\=\(string\)video\,\ clock-rate\=\(int\)90000\,\ "
+               "encoding-name\=\(string\)H264\,\ packetization-mode\=\(string\)1\,\ profile-level-id\=\(string\)640028\,\ "
+               "sprop-parameter-sets\=\(string\)\"J2QAKKwrQDwBE/LAPEiagA\\\=\\\=\\\,KO4CXLA\\\=\"\,\ payload\=\(int\)96\,\ "
+               "ssrc\=\(uint\)1748482228\,\ timestamp-offset\=\(uint\)1596184480\,\ seqnum-offset\=\(uint\)2320 ! "
+               "rtpstreampay ! tcpserversink host=192.168.42.42 port=5001");
+        exit(0);
+    }
+
+    adc.setupADC();
+    radio.setupSerial("/dev/serial0", 115200);
+    int timer, rcTimer = millis();
 
     //Main loop
+    std::array<uint8_t, 15> dummyMsg = {0xFF, 0xFE, 0x01, 0x01, 0x00, 0x05, 0xDD, 0x05, 0xDD, 0x05, 0xDD, 0x05, 0xDD, 0xFD, 0xFC};
+    uint8_t count = 0;
     while (1) {
-        if(millis() - timer > 1000) {
-            printf("Sending Heartbeat\n");
-            radioBuffer sendBuffer = radio.sendHeartbeat(MAV_MODE_PREFLIGHT, MAV_STATE_STANDBY);
-            radio.write(sendBuffer.buf, sendBuffer.len);
-            timer = millis();
-        }
-        //printf("1\n");
-        radio.mavlinkReceiveByte(radio.readChar());
-        //printf("2\n");
-        radioBuffer buffer = radio.sendRCChannels(getJoystickChannels());
-        //printf("3\n");
-        radio.write(buffer.buf, buffer.len);
+//        if(millis() - timer > 1000) {
+//            printf("Sending Heartbeat\n");
+//            radioBuffer sendBuffer = radio.sendHeartbeat(MAV_MODE_PREFLIGHT, MAV_STATE_STANDBY);
+//            radio.write(sendBuffer.buf, sendBuffer.len);
+//            timer = millis();
+//        }
+//        else if (millis() - rcTimer > 100) {
+//            radioBuffer buffer = radio.sendRCChannels(getJoystickChannels());
+//            radio.write(buffer.buf, buffer.len);
+//            rcTimer = millis();
+//        }
+//        radio.mavlinkReceiveByte(radio.readChar());
+        channels rcChannels;
+        adc.getJoystickChannels(rcChannels);
+        if (count == 255) count = 0;
+        dummyMsg[4] = count;
+        dummyMsg[5] = (rcChannels.throttlePWM >> 8) & 0xFF;
+        dummyMsg[6] = rcChannels.throttlePWM & 0xFF;
+        dummyMsg[7] = (rcChannels.pitchPWM >> 8) & 0xFF;
+        dummyMsg[8] = rcChannels.pitchPWM & 0xFF;
+        dummyMsg[9] = (rcChannels.rollPWM >> 8) & 0xFF;
+        dummyMsg[10] = rcChannels.rollPWM & 0xFF;
+        dummyMsg[11] = (rcChannels.yawPWM >> 8) & 0xFF;
+        dummyMsg[12] = rcChannels.yawPWM & 0xFF;
+
+        //printf("%d\n", dummyMsg[4]);
+        radio.write(dummyMsg.data(), 15);
+        count++;
+        //delay(50);
     }
     //stream.receiveDataPacket();
 

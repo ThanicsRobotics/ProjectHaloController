@@ -59,14 +59,16 @@ const radioBuffer& Radio<InterfaceType>::sendHeartbeat(uint8_t mode, uint8_t sta
 
 template<typename InterfaceType>
 const radioBuffer& Radio<InterfaceType>::sendRCChannels(const channels& rcChannels) {
+    std::cout << "pitch: " << rcChannels.pitchPWM
+              << "\nroll: " << rcChannels.rollPWM
+              << "\nyaw: " << rcChannels.yawPWM
+              << "\nthrottle: " << rcChannels.throttlePWM << "\n-----\n";
     mavlink_message_t msg;
     uint16_t len;
     static uint8_t buf[MAVLINK_MAX_PACKET_LEN];
-    printf("here4\n");
-    mavlink_msg_rc_channels_pack(SYSID, COMPID, &msg, millis(), 4, rcChannels.pitchPWM, rcChannels.rollPWM,
+    mavlink_msg_rc_channels_raw_pack(SYSID, COMPID, &msg, millis(), 0, rcChannels.pitchPWM, rcChannels.rollPWM,
             rcChannels.yawPWM, rcChannels.throttlePWM,
-            UINT16_MAX, UINT16_MAX, UINT16_MAX, UINT16_MAX, UINT16_MAX, UINT16_MAX, UINT16_MAX, UINT16_MAX,
-            UINT16_MAX, UINT16_MAX, UINT16_MAX, UINT16_MAX, UINT16_MAX, UINT16_MAX, 255);
+            UINT16_MAX, UINT16_MAX, UINT16_MAX, UINT16_MAX, 255);
     len = mavlink_msg_to_send_buffer(buf, &msg);
 
     static radioBuffer sendBuffer;
@@ -115,8 +117,8 @@ void Radio<InterfaceType>::mavlinkReceiveByte(uint8_t data) {
                     hb.type, hb.base_mode, controllerStatus);
                 break;
             case MAVLINK_MSG_ID_RC_CHANNELS:
-                mavlink_rc_channels_t channels;
-                mavlink_msg_rc_channels_decode(&msg, &channels);
+                mavlink_rc_channels_raw_t channels;
+                mavlink_msg_rc_channels_raw_decode(&msg, &channels);
                 pwmInputs.pitchPWM = channels.chan1_raw;
                 pwmInputs.rollPWM = channels.chan2_raw;
                 pwmInputs.yawPWM = channels.chan3_raw;
