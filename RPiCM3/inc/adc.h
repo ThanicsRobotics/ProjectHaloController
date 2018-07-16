@@ -7,7 +7,7 @@
 #define ADC_H
 #define RPI_COMPILE 1
 
-#include <radio.h>
+#include <types.h>
 #include <array>
 
 #if RPI_COMPILE

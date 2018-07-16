@@ -1,7 +1,8 @@
 #include <adc.h>
 
-#if RPI_COMPILE
 #include <pigpio.h>
+#include <wiringPi.h>
+#include <iostream>
 
 #define ADC_ADDR 0x33
 
@@ -70,6 +71,3 @@ void ADC::getJoystickChannels(channels& rcChannels) {
               << "\n-----" << std::endl;
     lastTime = millis();
 }
-
-#endif
-

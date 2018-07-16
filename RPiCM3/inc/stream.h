@@ -1,15 +1,42 @@
+/// @file stream.h
+/// @author Andrew Loomis
+/// @date 5/17/2018
+/// @brief Definition of Stream class.
+
 #ifndef STREAM_H
 #define STREAM_H
 
-#include <stdint.h>
+#include <iostream>
+#include <boost/asio.hpp>
+#include <string>
+#include <functional>
 
+/// @brief Controls a Wireless LAN (WLAN) radio, like the pDDL2450.
 class Stream
 {
 public:
-    Stream(char *ip_address, char *port);
-    int sendData(uint8_t *data, uint16_t len);
-    char *receiveDataPacket();
-    void closeStream();
+    /// @brief Initializes private variables.
+    Stream();
+
+    void startHost();
+    void write(std::string& msg);
+    void read(std::function<void(std::size_t)> callback);
+    void checkBuffer();
+
+    /// @brief Gives access to whether the socket is active.
+    /// @return True if socket is active, false if not.
+    bool isActive() const { return active; }
+
+    std::array<char, 128> getCurrentMessage() const { return currentMessage; }
+
+private:
+    bool active;
+    boost::asio::io_context io;
+    boost::asio::ip::tcp::socket socket;
+    boost::asio::ip::tcp::acceptor acceptor;
+    boost::asio::ip::tcp::resolver resolver;
+
+    std::array<char, 128> currentMessage;
 };
 
-#endif // STREAM_H
+#endif
