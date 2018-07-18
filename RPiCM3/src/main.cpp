@@ -1,4 +1,4 @@
-#include <stream.h>
+#include <wlanradio.h>
 #include <wiringPi.h>
 
 // void shutdown(int signum) {
@@ -36,33 +36,39 @@
     
 
 // }
-Stream stream;
+// Stream stream;
 
-void callback(std::size_t size) {
-    std::array<char, 128> buf = stream.getCurrentMessage();
-    std::cout << "Received: ";
-    for (int i = 0; i < size; i++)
-    {
-        std::cout << buf[i];
-    }
-    std::cout << std::endl;
-    stream.read(callback);
-}
+// void callback(std::size_t size) {
+//     std::array<char, 128> buf = stream.getCurrentMessage();
+//     std::cout << "Received: ";
+//     for (int i = 0; i < size; i++)
+//     {
+//         std::cout << buf[i];
+//     }
+//     std::cout << std::endl;
+//     stream.read(callback);
+// }
 
 int main(int argc, char *argv[])
 {
-    
-    stream.startHost();
-    std::string msg = "hello1234";
-    stream.write(msg);
-    stream.read(callback);
-    int i = 0;
-    while (1)
-    {
-        std::cout << i++ << std::endl;
+    wiringPiSetupGpio();
+    WLANRadio radio(WLAN::DeviceType::HOST, 5000);
+
+    while (1) {
+        messagePacket msg;
+        radio.send(msg);
         delay(100);
-        stream.checkBuffer();
     }
+    // std::string msg = "hello1234";
+    // stream.write(msg);
+    // stream.read(callback);
+    // int i = 0;
+    // while (1)
+    // {
+    //     std::cout << i++ << std::endl;
+    //     delay(100);
+    //     stream.checkBuffer();
+    // }
 
 
     return 0;
