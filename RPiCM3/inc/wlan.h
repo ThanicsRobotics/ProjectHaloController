@@ -6,7 +6,7 @@
 #ifndef WLAN_H
 #define WLAN_H
 
-#define MAX_BUFFER_SIZE 128
+#define PACKET_SIZE 26
 
 #include <iostream>
 #include <boost/asio.hpp>
@@ -28,7 +28,7 @@ public:
     WLAN(DeviceType type, std::string ipAddress, int port);
 
     void start(DeviceType type, std::string ipAddress, int port);
-    void write(std::array<char, MAX_BUFFER_SIZE>& msg);
+    void write(std::array<uint8_t, PACKET_SIZE>& msg);
     void read();
     void setCallback(std::function<void(std::size_t)> callback);
     void checkBuffer();
@@ -37,14 +37,19 @@ public:
     /// @return True if socket is active, false if not.
     bool isActive() const { return active; }
 
-    void getCachedMessage(std::array<char, MAX_BUFFER_SIZE>& msg) const { msg = cachedMessage; }
+    void getCachedMessage(std::array<uint8_t, PACKET_SIZE>& msg) const { msg = cachedMessage; }
 
 private:
     void startHost();
     void startClient(std::string ipAddress, int port);
 
-    bool active;
+    bool active = false;
+    bool connected = false;
+
+    // Cached for repeated attempts
     DeviceType deviceType;
+    std::string hostname;
+    int port;
 
     boost::asio::io_context io;
     boost::asio::ip::tcp::socket socket;
@@ -54,7 +59,7 @@ private:
     std::function<void(std::size_t size)> receiveCallback;
     bool callbackSet = false;
 
-    std::array<char, MAX_BUFFER_SIZE> cachedMessage;
+    std::array<uint8_t, PACKET_SIZE> cachedMessage;
 };
 
 #endif
