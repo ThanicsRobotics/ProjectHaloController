@@ -13,6 +13,9 @@
 class ADC
 {
 public:
+    ADC();
+    ~ADC();
+
     /// @brief Opens I2C port and sends setup byte.
     void setupADC();
     
@@ -21,11 +24,16 @@ public:
     /// have new 0-1023 point values.
     void getADCData(std::array<uint16_t, 7>& pointArray);
 
+    uint16_t getChannelValue(int channelNumber);
+
     /// @brief Closes I2C port.
     void closeADC();
 
 private:
     int adcFd;  ///< File descriptor for ADC I2C port.
+    bool configured = false;
+
+    std::array<uint16_t, 7> cachedReading;
 
     /// @brief Converts the raw data from the ADC to a decimal 0-1023 number.
     /// @param data Array of data containing I2C block read from ADC.

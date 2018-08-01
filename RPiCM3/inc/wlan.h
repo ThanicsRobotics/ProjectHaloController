@@ -51,7 +51,7 @@ private:
     std::string hostname;
     int port;
 
-    boost::asio::io_context io;
+    boost::asio::io_service io;
     boost::asio::ip::tcp::socket socket;
     boost::asio::ip::tcp::acceptor acceptor;
     boost::asio::ip::tcp::resolver resolver;

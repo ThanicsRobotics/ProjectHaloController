@@ -7,19 +7,18 @@
 class Joysticks
 {
 public:
-    Joysticks();
+    Joysticks(ADC& adc);
 
     /// @brief Gives access to current joystick PWM positions.
     /// @param rcChannels Reference to a channels object, that
     /// will be modified to current joystick values.
     void getJoystickChannels(channels& rcChannels);
 
+    bool isLeftButtonPressed();
+    bool isRightButtonPressed();
+
 private:
     unsigned int lastTime = 0;
-
-    /// @brief Converts 0-1023 point value to 0-3.3V.
-    /// @return Value in volts, 0-3.3.
-    float pointsToVolts(uint16_t points);
 
     /// @brief Converts 0-1023 points to 1000-2000us PWM value.
     /// @return Converted PWM value, 1000-2000.

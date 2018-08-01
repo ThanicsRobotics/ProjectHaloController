@@ -1,7 +1,14 @@
 #include <adccontroller.h>
 
-ADCController::ADCController(Joysticks& joystick, Battery& battery)
-    : mJoystick(joystick), mBattery(battery)
+ADCController::ADCController()
+    : mJoystick(adc), mBattery(adc)
 {
     
+}
+
+void ADCController::getJoystickPositions(channels& joystickPositions)
+{
+    channels rcChannels;
+    mJoystick.getJoystickChannels(rcChannels);
+    joystickPositions = rcChannels;
 }

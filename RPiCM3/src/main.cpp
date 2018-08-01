@@ -1,16 +1,24 @@
-#include <wlanradio.h>
+#include <controller.h>
 #include <wiringPi.h>
+#include <pigpio.h>
+
+/// @brief Terminal signal handler (for ending program via terminal).
+void signal_callback_handler(int signum) {
+    gpioTerminate();
+    exit(0);
+}
 
 int main(int argc, char *argv[])
 {
     wiringPiSetupGpio();
-    WLANRadio radio(WLAN::DeviceType::HOST, "", 5000);
+    gpioInitialise();
 
-    while (1) {
-        messagePacket msg;
-        radio.send(msg);
-        delay(100);
-    }
+    // Override pigpio SIGINT handling
+    signal(SIGINT, signal_callback_handler);
 
+    Controller controller;
+    controller.loopTest();
+
+    gpioTerminate();
     return 0;
 }

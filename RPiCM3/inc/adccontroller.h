@@ -4,11 +4,21 @@
 #include <adc.h>
 #include <joysticks.h>
 #include <battery.h>
+#include <types.h>
+
+#include <string>
 
 class ADCController
 {
 public:
-    ADCController(Joysticks& joystick, Battery& battery);
+    ADCController();
+    void getJoystickPositions(channels& joystickPositions);
+    bool isLeftButtonPressed() { return mJoystick.isLeftButtonPressed(); }
+    bool isRightButtonPressed() { return mJoystick.isRightButtonPressed(); }
+
+    int getBatteryLife() { return mBattery.getRemainingCapacity(); }
+    float getBatteryVoltage() { return mBattery.getVoltage(); }
+    float getChargeCurrent() { return mBattery.getChargingCurrent(); }
 
 private:
     ADC adc;

@@ -6,10 +6,20 @@
 
 #define ADC_ADDR 0x33
 
+ADC::ADC()
+{
+    if (!configured) setupADC();
+}
+
+ADC::~ADC()
+{
+    closeADC();
+}
+
 void ADC::setupADC() {
     adcFd = i2cOpen(1,ADC_ADDR,0);
     i2cWriteByte(adcFd, 0x82); //Setup Byte: 10000010
-
+    configured = true;
 }
 
 void ADC::closeADC() {
@@ -34,4 +44,10 @@ void ADC::getADCData(std::array<uint16_t, 7>& pointArray) {
     //for (int i = 0; i < sizeof(adcValues); i ++) std::cout << (int)adcValues[i] << std::endl;
 
     parseToPoints(adcValues, pointArray);
+}
+
+uint16_t ADC::getChannelValue(int channelNumber)
+{
+    getADCData(cachedReading);
+    return channelNumber < 8 ? cachedReading[channelNumber] : 0;
 }

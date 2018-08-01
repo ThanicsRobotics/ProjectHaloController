@@ -2,7 +2,8 @@
 #define CONTROLLER_H
 
 #include <wlanradio.h>
-#include <joystick.h>
+#include <joysticks.h>
+#include <adccontroller.h>
 
 class Controller
 {
@@ -11,8 +12,8 @@ public:
     void loopTest();
 
 private:
-    WLANRadio radio;
-    
+   // WLANRadio radio;
+    ADCController adcController;
 };
 
 #endif

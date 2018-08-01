@@ -1,6 +1,6 @@
 CC=g++-8.1.0
 CFLAGS=-Wall -Wextra -pthread -std=c++17 -ggdb3 -I/usr/local/include
-LIBS=-L/usr/local/lib `pkg-config --cflags --libs gstreamer-1.0` -lwiringPi -lrt -lpigpio -lusb -lboost_system
+LIBS=-L/usr/local/lib `pkg-config --cflags --libs gstreamer-1.0` -lwiringPi -lrt -lpigpio -lusb -l:libboost_system.a
 PROJPATH=.
 DIR1=$(PROJPATH)/src/
 OBJ=$(patsubst %.cpp,%.o,$(wildcard $(DIR1)*.cpp))
