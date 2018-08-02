@@ -12,7 +12,7 @@ public:
     void loopTest();
 
 private:
-   // WLANRadio radio;
+    WLANRadio radio;
     ADCController adcController;
 };
 

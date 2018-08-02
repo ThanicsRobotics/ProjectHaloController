@@ -4,14 +4,24 @@
 #include <algorithm>
 
 WLANRadio::WLANRadio(WLAN::DeviceType deviceType, std::string ipAddress, int port)
-    : wlan(deviceType, ipAddress, port), connected(true)
+    : wlan(deviceType, ipAddress, port)
 {
     
 }
 
+void WLANRadio::turnOnRadio()
+{
+
+}
+
+void WLANRadio::turnOffRadio()
+{
+
+}
+
 void WLANRadio::connect(WLAN::DeviceType deviceType, std::string ipAddress, int port)
 {
-    if (!connected) 
+    if (!wlan.isConnected()) 
     {
         wlan.start(deviceType, ipAddress, port);
         wlan.read();

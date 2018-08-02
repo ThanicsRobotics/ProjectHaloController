@@ -1,4 +1,6 @@
 #include <wlan.h>
+#include <boost/bind.hpp>
+#include <wiringPi.h>
 
 using boost::asio::ip::tcp;
 
@@ -35,14 +37,8 @@ void WLAN::startHost()
     try
     {
         std::cout << "Waiting for client..." << std::endl;
-        acceptor.accept(socket);
-        connected = true;
-        // Use async_accept here in the future
-
-        std::cout << "Client connected: " << socket.remote_endpoint().address().to_string() << std::endl;
-        std::string msg = "Hello from Controller\n";
-        boost::system::error_code err;
-        boost::asio::write(socket, boost::asio::buffer(msg), err);
+        //acceptor.accept(socket);
+        acceptor.async_accept(socket, boost::bind(&WLAN::handleAccept, this, boost::asio::placeholders::error));
     }
     catch (std::exception& e)
     {
@@ -86,6 +82,7 @@ void WLAN::startClient(std::string ipAddress, int port)
         else if (error)
             throw boost::system::system_error(error);
 
+        std::cout << "Inbound: ";
         std::cout.write((char*)buf.data(), len);
     }
     catch (std::exception& e)
@@ -94,10 +91,30 @@ void WLAN::startClient(std::string ipAddress, int port)
     }
 }
 
+void WLAN::handleAccept(const boost::system::error_code& error)
+{
+    if (!error)
+    {
+        connected = true;
+
+        std::cout << "Client connected: " << socket.remote_endpoint().address().to_string() << std::endl;
+        std::string msg = "Hello from Controller\n";
+        boost::system::error_code err;
+        boost::asio::write(socket, boost::asio::buffer(msg), err);
+        delay(2000);
+    }
+    else
+    {
+        std::cout << "accept error" << std::endl;
+        delay(2000);
+    }
+}
+
 void WLAN::write(std::array<uint8_t, PACKET_SIZE>& msg)
 {
     if (!connected)
     {
+        std::cout << "Radio Not Connected!" << std::endl;
         start(deviceType, hostname, port);
         return;
     }
@@ -128,6 +145,7 @@ void WLAN::read()
 {
     if (!connected)
     {
+        std::cout << "Radio Not Connected!" << std::endl;
         start(deviceType, hostname, port);
         return;
     }

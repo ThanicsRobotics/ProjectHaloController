@@ -35,13 +35,14 @@ public:
 
     /// @brief Gives access to whether the socket is active.
     /// @return True if socket is active, false if not.
-    bool isActive() const { return active; }
+    bool isConnected() const { return connected; }
 
     void getCachedMessage(std::array<uint8_t, PACKET_SIZE>& msg) const { msg = cachedMessage; }
 
 private:
     void startHost();
     void startClient(std::string ipAddress, int port);
+    void handleAccept(const boost::system::error_code& error);
 
     bool active = false;
     bool connected = false;

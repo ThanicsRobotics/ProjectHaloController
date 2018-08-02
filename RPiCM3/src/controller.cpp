@@ -5,7 +5,7 @@
 #include <types.h>
 
 Controller::Controller()
-    //: radio(WLAN::DeviceType::HOST, "", 5000)
+    : radio(WLAN::DeviceType::HOST, "", 5000)
 {
     
 }
@@ -24,13 +24,14 @@ void Controller::loopTest()
         << "\n=== Battery ==="
         << "\nVoltage : " << adcController.getBatteryVoltage()
         << "\nCapacity : " << adcController.getBatteryLife() 
-        << "\nCharge Current : " << adcController.getChargeCurrent() << "mA"
+        << "\nCharge Current : " << adcController.getChargeCurrent() * 1000 << "mA"
         << "\n=== Buttons ==="
         << "\nLeft : " << adcController.isLeftButtonPressed()
         << "\nRight : " << adcController.isRightButtonPressed() << std::endl;
         
         messagePacket msg;
-        //radio.send(msg);
+        radio.checkBuffer();
+        radio.send(msg);
         delay(100);
     }
 }
