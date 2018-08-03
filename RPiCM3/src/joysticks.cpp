@@ -9,6 +9,11 @@ Joysticks::Joysticks(ADC& adc)
     pinMode(41, INPUT);
 }
 
+uint16_t reverseChannel(uint16_t originalPWM)
+{
+    return 3000 - originalPWM;
+}
+
 void Joysticks::getJoystickChannels(channels& rcChannels) {
     std::array<uint16_t, 7> totalAdcData{};
     
@@ -23,10 +28,10 @@ void Joysticks::getJoystickChannels(channels& rcChannels) {
         }
     }
 
-    rcChannels.pitchPWM = pointsToPWM(totalAdcData[4]/repetitions);
-    rcChannels.rollPWM = pointsToPWM(totalAdcData[3]/repetitions);
-    rcChannels.yawPWM = pointsToPWM(totalAdcData[1]/repetitions);
-    rcChannels.throttlePWM = pointsToPWM(totalAdcData[2]/repetitions);
+    rcChannels.pitchPWM = reverseChannel(pointsToPWM(totalAdcData[4]/repetitions));
+    rcChannels.rollPWM = reverseChannel(pointsToPWM(totalAdcData[3]/repetitions));
+    rcChannels.yawPWM = reverseChannel(pointsToPWM(totalAdcData[1]/repetitions));
+    rcChannels.throttlePWM = reverseChannel(pointsToPWM(totalAdcData[2]/repetitions));
     // std::cout << "pitch: " << rcChannels.pitchPWM
     //           << "\nroll: " << rcChannels.rollPWM
     //           << "\nyaw: " << rcChannels.yawPWM

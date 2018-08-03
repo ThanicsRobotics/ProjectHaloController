@@ -3,7 +3,8 @@
 
 #include <wlanradio.h>
 #include <joysticks.h>
-#include <adccontroller.h>
+#include <adc.h>
+#include <battery.h>
 
 class Controller
 {
@@ -13,7 +14,11 @@ public:
 
 private:
     WLANRadio radio;
-    ADCController adcController;
+    // ADCController adcController;
+    ADC adc;
+    Joysticks joysticks;
+    Battery battery;
+
 };
 
 #endif

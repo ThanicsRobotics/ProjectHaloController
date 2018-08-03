@@ -99,10 +99,6 @@ void WLANRadio::encode(messagePacket& msg, std::array<uint8_t, PACKET_SIZE>& out
     msg.fromid = 0;
     msg.msgid = 0;
     msg.seqid = seq++;
-    msg.rcChannels.pitchPWM = 1500;
-    msg.rcChannels.rollPWM = 1500;
-    msg.rcChannels.yawPWM = 1500;
-    msg.rcChannels.throttlePWM = 1000;
     outPacket[0] = 0xFF;
     outPacket[1] = 0xFE;
     outPacket[2] =  msg.fromid;

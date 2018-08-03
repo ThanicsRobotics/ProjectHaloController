@@ -4,8 +4,8 @@
  * Created: 1/1/2018 7:29:31 PM
  * Author : Bill 2012
  */ 
-#include "usi_i2c_slave.h"
-#include "usi_i2c_master.h"
+// #include "usi_i2c_slave.h"
+// #include "usi_i2c_master.h"
 #include <avr/io.h>
 #include <util/delay.h>
 #define F_CPU 12000000UL
