@@ -14,9 +14,6 @@ public:
     /// will be modified to current joystick values.
     void getJoystickChannels(channels& rcChannels);
 
-    bool isLeftButtonPressed();
-    bool isRightButtonPressed();
-
 private:
     unsigned int lastTime = 0;
 

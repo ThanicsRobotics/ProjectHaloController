@@ -5,16 +5,21 @@
 #include <types.h>
 #include <util.h>
 
-Controller::Controller()
-    : radio(WLAN::DeviceType::HOST, "", 5000), joysticks(adc),
-    battery(adc)
+Controller::Controller(std::shared_ptr<bool> shutdown)
+    : shutdownIndicator(shutdown), radio(WLAN::DeviceType::HOST, "", 5000), 
+    joysticks(adc), battery(adc), leftButton(38), 
+    rightButton(41), powerButton(6, shutdown)
 {
-    
+}
+
+Controller::~Controller()
+{
+    std::cout << "Controller Shutting Down..." << std::endl;
 }
 
 void Controller::loopTest()
 {
-    while (1) {
+    while (!(*shutdownIndicator)) {
         // Diagnostics
         channels joystickPositons;
         joysticks.getJoystickChannels(joystickPositons);
@@ -29,9 +34,11 @@ void Controller::loopTest()
         << "\nCharging : " << (battery.isCharging() ? "Yes" : "No")
         << "\nCharge Current : " << battery.getChargingCurrent(10) << "mA"
         << "\n=== Buttons ==="
-        << "\nLeft : " << joysticks.isLeftButtonPressed()
-        << "\nRight : " << joysticks.isRightButtonPressed() << std::endl;
-        
+        << "\nLeft : " << leftButton.isPressed()
+        << "\nRight : " << rightButton.isPressed()
+        << "\nPower : " << powerButton.isPressed() << std::endl;
+        powerButton.update();
+
         messagePacket msg;
         msg.rcChannels.pitchPWM = joystickPositons.pitchPWM;
         msg.rcChannels.rollPWM = joystickPositons.rollPWM;

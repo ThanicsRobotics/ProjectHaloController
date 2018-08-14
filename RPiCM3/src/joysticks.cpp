@@ -44,13 +44,3 @@ void Joysticks::getJoystickChannels(channels& rcChannels) {
 uint16_t Joysticks::pointsToPWM(uint16_t points) {
     return (points * 1000 / 1024) + 1000;
 }
-
-bool Joysticks::isLeftButtonPressed()
-{
-    return digitalRead(38) ? true : false;
-}
-
-bool Joysticks::isRightButtonPressed()
-{
-    return digitalRead(41) ? true : false;
-}
