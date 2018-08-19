@@ -1,7 +1,7 @@
 #include <battery.h>
 #include <util.h>
 
-Battery::Battery(ADC& adc)
+Battery::Battery(std::shared_ptr<ADC> adc)
     : adc(adc)
 {
 
@@ -33,7 +33,7 @@ float Battery::getChargingCurrent(int averagingRepetitions)
     float sum = 0.0;
     for (int i = 0; i < averagingRepetitions; i++)
     {
-        sum += parseToVolts(adc.getChannelValue(6));
+        sum += parseToVolts(adc->getChannelValue(6));
     }
     float chargeCurrent = ((sum / averagingRepetitions) - offset) * 1000; // convert to mA, subtract offset
 
@@ -55,7 +55,7 @@ float Battery::getVoltage(int averagingRepetitions)
     float sum = 0.0;
     for (int i = 0; i < averagingRepetitions; i++)
     {
-        sum += parseToVolts(adc.getChannelValue(0));
+        sum += parseToVolts(adc->getChannelValue(0));
     }
 
     // Battery reading goes through divide-by-2 resistor divider, 

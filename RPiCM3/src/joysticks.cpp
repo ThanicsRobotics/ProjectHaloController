@@ -2,7 +2,7 @@
 #include <wiringPi.h>
 #include <iostream>
 
-Joysticks::Joysticks(ADC& adc)
+Joysticks::Joysticks(std::shared_ptr<ADC> adc)
     : adc(adc)
 {
     pinMode(38, INPUT);
@@ -21,7 +21,7 @@ void Joysticks::getJoystickChannels(channels& rcChannels) {
     for (int i = 0; i < repetitions; i++)
     {
         std::array<uint16_t, 7> rawADCPoints;
-        adc.getADCData(rawADCPoints);
+        adc->getADCData(rawADCPoints);
         for (int j = 0; j < 7; j++)
         {
             totalAdcData[j] += rawADCPoints[j];

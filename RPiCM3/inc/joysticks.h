@@ -3,11 +3,12 @@
 
 #include <adc.h>
 #include <types.h>
+#include <memory>
 
 class Joysticks
 {
 public:
-    Joysticks(ADC& adc);
+    Joysticks(std::shared_ptr<ADC> adc);
 
     /// @brief Gives access to current joystick PWM positions.
     /// @param rcChannels Reference to a channels object, that
@@ -20,8 +21,7 @@ private:
     /// @brief Converts 0-1023 points to 1000-2000us PWM value.
     /// @return Converted PWM value, 1000-2000.
     uint16_t pointsToPWM(uint16_t points);
-
-    ADC adc;
+    std::shared_ptr<ADC> adc;
 };
 
 #endif

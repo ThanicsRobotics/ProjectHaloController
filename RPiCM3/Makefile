@@ -15,4 +15,4 @@ clean:
 	rm -f $(EXEC)
 
 install:
-	cp $(EXEC) /usr/bin/
+	cp $(EXEC) /usr/local/bin/

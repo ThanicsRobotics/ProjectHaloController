@@ -18,6 +18,31 @@ void signal_callback_handler(int signum) {
     exit(0);
 }
 
+///
+/// halo-controller executable
+///
+
+// int main(int argc, char *argv[])
+// {
+//     wiringPiSetupGpio();
+//     gpioInitialise();
+
+//     // Override pigpio SIGINT handling
+//     signal(SIGINT, signal_callback_handler);
+//     {
+//         shutdownIndicator = std::make_shared<bool>(false);
+//         Controller controller(shutdownIndicator);
+//         controller.loopTest();
+//     }
+//     shutdown();
+    
+//     return 0;
+// }
+
+///
+/// controller-status executable
+///
+
 int main(int argc, char *argv[])
 {
     wiringPiSetupGpio();
@@ -28,9 +53,9 @@ int main(int argc, char *argv[])
     {
         shutdownIndicator = std::make_shared<bool>(false);
         Controller controller(shutdownIndicator);
-        controller.loopTest();
+        controller.printStatus();
     }
-    shutdown();
+    gpioTerminate();
     
     return 0;
 }
